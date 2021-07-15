@@ -10,7 +10,7 @@ import { ProfileRelationsBoxWrapper } from '../src/components/ProfileRelations'
 
 function ProfileSidebar({ gitHubUser } = props) {
   return (
-    <Box  as="aside">
+    <Box as="aside">
       <img className="imgProfile" src={`https://github.com/${gitHubUser}.png`} />
       <hr />
       <p>
@@ -27,6 +27,29 @@ function ProfileSidebar({ gitHubUser } = props) {
       <AlurakutProfileSidebarMenuDefault />
     </Box>
   )
+}
+
+function ProfileRealationsBox({ items, title } = props) {
+  return (
+    <ProfileRelationsBoxWrapper>
+      <h2 className="smallTitle">
+        {title} ({items.length})
+      </h2>
+      <ul>
+        {/* {comunidades.map((itemAtual) => {
+          return (
+            <li key={itemAtual.id}>
+              <a href={`/users/${itemAtual.title}`} key={itemAtual.title}>
+                <img src={itemAtual.image} />
+                <span>{itemAtual.title}</span>
+              </a>
+            </li>
+          )
+        })} */}
+      </ul>
+    </ProfileRelationsBoxWrapper>
+  )
+
 }
 
 
@@ -47,9 +70,22 @@ export default function Home() {
     'ArthurMaciel95'
   ]
 
+  
+  const [seguidores, setSeguidores] = React.useState([])
+  React.useEffect(function () {
+
+    fetch('https://api.github.com/users/angeloengcomp/followers').then(respostaServidor => {
+      return respostaServidor.json()
+    }).then(respostaCompleta => { 
+      setSeguidores(respostaCompleta) })
+
+  },[])
+
+  console.log(`seguidores ${seguidores.id}`)
+
   return (
     <>
-      <AlurakutMenu githubUser={gitHubUser}/>
+      <AlurakutMenu githubUser={gitHubUser} />
       <MainGrid>
 
         <div className="profileArea" styled={{ gridArea: 'profileArea' }}>
@@ -112,6 +148,12 @@ export default function Home() {
         </div>
 
         <div className="profileRelationsArea" styled={{ gridArea: 'profileRelationsArea' }}>
+
+          <ProfileRealationsBox
+            title='seguidores'
+            items={seguidores}
+          />
+
           <ProfileRelationsBoxWrapper>
             <h2 className="smallTitle">
               Comunidades ({comunidades.length})
