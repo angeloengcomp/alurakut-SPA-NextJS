@@ -76,7 +76,7 @@ export default function Home() {
 
               const comunidade = {
                 id: new Date().toISOString(),
-                titulo: dadosDoForm.get('title'),
+                title: dadosDoForm.get('title'),
                 image: dadosDoForm.get('image')
               }
 
@@ -98,7 +98,7 @@ export default function Home() {
 
               <div>
                 <input
-                  name="title"
+                  name="image"
                   aria-label="Coloque uma URL para usarmos de capa"
                   placeholder="Colque uma URL para usarmos de capa"
                 />
