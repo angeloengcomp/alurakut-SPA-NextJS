@@ -55,12 +55,9 @@ function ProfileRealationsBox({ items, title } = props) {
 
 export default function Home() {
   const gitHubUser = "angeloengcomp";
-  const [comunidades, setComunidades] = React.useState([{
-    id: '123123345645',
-    title: 'eu odeio acordar cedo',
-    image: 'https://img10.orkut.br.com/community/52cc4290facd7fa700b897d8a1dc80aa.jpg'
-
-  }]);
+  const [comunidades, setComunidades] = React.useState([
+    // ass comunidads sao chamadas pelo graphQL no DATO
+  ]);
   const pessoasFavoritas = [
     'peas',
     'rafaballerini',
@@ -70,16 +67,41 @@ export default function Home() {
     'ArthurMaciel95'
   ]
 
-  
+
   const [seguidores, setSeguidores] = React.useState([])
   React.useEffect(function () {
-
     fetch('https://api.github.com/users/angeloengcomp/followers').then(respostaServidor => {
       return respostaServidor.json()
-    }).then(respostaCompleta => { 
-      setSeguidores(respostaCompleta) })
+    }).then(respostaCompleta => {
+      setSeguidores(respostaCompleta)
+    })
 
-  },[])
+    // API GraphQL DATOCMS
+    fetch('https://graphql.datocms.com/', {
+      method: 'POST',
+      headers: {
+        'Authorization': '54bd801002dd2d6897d1eb60627f35',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({"query": `query{
+          allCommunities{
+            title
+            id
+            imageUrl
+            creatorslug
+      }
+        }`})
+    })
+    .then(aws => aws.json())
+    .then(awsFull => {
+      const comunidadesVindasDoDato = awsFull.data.allCommunities
+
+      setComunidades(comunidadesVindasDoDato)
+      console.log(awsFull)
+    })
+
+  }, [])
 
   console.log(`seguidores ${seguidores.id}`)
 
@@ -113,7 +135,7 @@ export default function Home() {
               const comunidade = {
                 id: new Date().toISOString(),
                 title: dadosDoForm.get('title'),
-                image: dadosDoForm.get('image')
+                imageUrl: dadosDoForm.get('image')
               }
 
 
@@ -162,8 +184,8 @@ export default function Home() {
               {comunidades.map((itemAtual) => {
                 return (
                   <li key={itemAtual.id}>
-                    <a href={`/users/${itemAtual.title}`} key={itemAtual.title}>
-                      <img src={itemAtual.image} />
+                    <a href={`/users/${itemAtual.id}`} key={itemAtual.title}>
+                      <img src={itemAtual.imageUrl} />
                       <span>{itemAtual.title}</span>
                     </a>
                   </li>
