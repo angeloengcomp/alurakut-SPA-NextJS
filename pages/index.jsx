@@ -53,8 +53,8 @@ function ProfileRealationsBox({ items, title } = props) {
 }
 
 
-export default function Home() {
-  const gitHubUser = "angeloengcomp";
+export default function Home(props) {
+  const gitHubUser = 'angeloengcomp';
   const [comunidades, setComunidades] = React.useState([
     // ass comunidads sao chamadas pelo graphQL no DATO
   ]);
@@ -84,7 +84,8 @@ export default function Home() {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
-      body: JSON.stringify({"query": `query{
+      body: JSON.stringify({
+        "query": `query{
           allCommunities{
             title
             id
@@ -93,13 +94,13 @@ export default function Home() {
       }
         }`})
     })
-    .then(aws => aws.json())
-    .then(awsFull => {
-      const comunidadesVindasDoDato = awsFull.data.allCommunities
+      .then(aws => aws.json())
+      .then(awsFull => {
+        const comunidadesVindasDoDato = awsFull.data.allCommunities
 
-      setComunidades(comunidadesVindasDoDato)
-      console.log(awsFull)
-    })
+        setComunidades(comunidadesVindasDoDato)
+        console.log(awsFull)
+      })
 
   }, [])
 
@@ -125,7 +126,6 @@ export default function Home() {
 
           <Box>
             <h2 className="subTitle">O que você deseja fazer?</h2>
-
             <form onSubmit={function handleCriaComunidade(e) {
               e.preventDefault();
 
@@ -133,32 +133,43 @@ export default function Home() {
               const dadosDoForm = new FormData(e.target);
 
               const comunidade = {
-                id: new Date().toISOString(),
                 title: dadosDoForm.get('title'),
-                imageUrl: dadosDoForm.get('image')
+                imageUrl: dadosDoForm.get('image'),
+                creatorSlug: 'angeloengcomp',
               }
 
 
-              const comunidadesAtualizadas = [...comunidades, comunidade]
+              fetch('/api/comunidades', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'aplication/json',
+                },
+                body: JSON.stringify(comunidade),
+              }).then( async response => {
+                const dados = await response.json();
+                const comunidade = dados.registroCriado;
+                const comunidadesAtualizadas = [...comunidades, comunidade]
+                // comunidades recebem comunidades atualizadas
+                setComunidades(comunidadesAtualizadas)
+  
+              })
 
-              // comunidades recebem comunidades atualizadas
-              setComunidades(comunidadesAtualizadas)
 
 
             }}>
               <div>
                 <input
-                  name="title"
-                  aria-label="qual vai ser o nome da sua comunidade?"
                   placeholder="Qual vai ser o nome da sua comunidade?"
-                />
+                  name="title"
+                  aria-label="Qual vai ser o nome da sua comunidade?"
+                  type="text"
+                  />
               </div>
-
               <div>
                 <input
+                  placeholder="Coloque uma URL para usarmos de capa"
                   name="image"
                   aria-label="Coloque uma URL para usarmos de capa"
-                  placeholder="Colque uma URL para usarmos de capa"
                 />
               </div>
               <button>Criar comunidade</button>
@@ -226,3 +237,5 @@ export default function Home() {
 
 
 }
+
+

@@ -32,8 +32,8 @@ const Box = styled.div`
     margin-bottom: 20px;
   }
   .imgProfile{
-    border-radius: 50%;
-    border: 4px solid #2E7BB4 ;
+    border-radius: 8px;
+    border: 2px solid #2E7BB4 ;
   }
 
   hr {
@@ -43,7 +43,7 @@ const Box = styled.div`
     border-bottom-color: #ECF2FA;
   }
   input {
-    width: 100%;
+    width: 90%;
     background-color: #F4F4F4;
     color: #333333;
     border: 0;
